@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.czwx.imall.core.mapper.InsuranceListMapper" >
+  <resultMap id="BaseResultMap" type="com.czwx.imall.core.domain.InsuranceList" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="company_name" property="companyName" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="state" property="state" jdbcType="VARCHAR" />
+  </resultMap>
+  <!--基本的sql查询字段 公共引用...-->
+  <sql id="Base_Column_List" >
+    id, company_name, create_time, update_time, state
+  </sql>
+  
+  <!-- 基本的sql查询条件公共引用 -->
+    <sql id="searchBy">
+        <trim prefix="where" prefixOverrides="and|or">
+            <if test="id != null and id != ''">
+                id  = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="companyName != null and companyName != ''">
+                and company_name = #{companyName,jdbcType=VARCHAR}
+            </if>
+			<if test="updateTime !=null">
+                and update_time = #{updateTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="createTime !=null">
+                and create_time = #{createTime,jdbcType=TIMESTAMP}
+            </if>
+			<if test="state != null and state != ''">
+                and state = #{state,jdbcType=VARCHAR}
+            </if>
+        </trim>
+    </sql>
+  
+  <select id="getInsuranceList" resultMap="BaseResultMap">
+    select * from im_insurance_company where state = '10' order by id
+  </select>
+</mapper>

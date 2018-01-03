@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.czwx.imall.core.mapper.CreditCardMapper" >
+	<!--返回Map-->  
+  <resultMap id="BaseResultMap" type="com.czwx.imall.core.domain.CreditCard" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+    <result column="bank" property="bank" jdbcType="VARCHAR" />
+    <result column="card_no" property="cardNo" jdbcType="VARCHAR" />
+    <result column="phone" property="phone" jdbcType="VARCHAR" />
+    <result column="agree_no" property="agreeNo" jdbcType="VARCHAR" />
+    <result column="bind_time" property="bindTime" jdbcType="TIMESTAMP" />
+    <result column="bank_code" property="bankCode" jdbcType="VARCHAR" />
+    <result column="bank_province" property="bankProvince" jdbcType="VARCHAR" />
+    <result column="bank_city" property="bankCity" jdbcType="VARCHAR" />
+    <result column="use_now" property="useNow" jdbcType="VARCHAR" />
+    <result column="front_img" property="frontImg" jdbcType="VARCHAR" />
+    <result column="back_img" property="backImg" jdbcType="VARCHAR" />
+    <result column="bank_type" property="bankType" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+  <!--基本的sql查询字段 公共引用...-->
+  <sql id="Base_Column_List" >
+    id, user_id, bank, card_no, phone, agree_no, bind_time, bank_code, bank_province, 
+    bank_city, use_now, front_img, back_img, bank_type, create_time, update_time
+  </sql>
+    
+    <!-- 基本的sql查询条件公共引用 -->
+    <sql id="searchBy">
+        <trim prefix="where" prefixOverrides="and|or">
+            <if test="id != null and id != ''">
+                id  = #{id,jdbcType=INTEGER}
+            </if>
+			<if test="userId != null and userId != ''">
+                and user_id = #{userId,jdbcType=INTEGER}
+            </if>
+            <if test="cardNo != null and cardNo != ''">
+                and card_no = #{cardNo,jdbcType=VARCHAR}
+            </if>
+            <if test="bindTime !=null">
+                and bind_time = #{bindTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="bank != null and bank != ''">
+                and bank = #{bank,jdbcType=VARCHAR}
+            </if>
+            <if test="phone != null and phone != ''">
+                and phone = #{phone,jdbcType=VARCHAR}
+            </if>
+            <if test="agreeNo != null and agreeNo != ''">
+                and agree_no = #{agreeNo,jdbcType=VARCHAR}
+            </if>
+            <if test="bankCode != null and bankCode != ''">
+                and bank_code = #{bankCode,jdbcType=VARCHAR}
+            </if>
+            <if test="bankProvince != null and bankProvince != ''">
+                and bank_province = #{bankProvince,jdbcType=VARCHAR}
+            </if>
+            <if test="bankCity != null and bankCity != ''">
+                and bank_city = #{bankCity,jdbcType=VARCHAR}
+            </if>
+            <if test="useNow != null and useNow != ''">
+                and use_now = #{useNow,jdbcType=VARCHAR}
+            </if>
+            <if test="bankType != null and bankType != ''">
+                and bank_type = #{bankType,jdbcType=VARCHAR}
+            </if>
+			<if test="frontImg != null and frontImg != ''">
+                and front_img = #{frontImg,jdbcType=VARCHAR}
+            </if>
+			<if test="backImg != null and backImg != ''">
+                and back_img = #{backImg,jdbcType=VARCHAR}
+            </if>
+			<if test="bankCode != null and backImg != ''">
+                and back_img = #{backImg,jdbcType=VARCHAR}
+            </if>
+			<if test="updateTime !=null">
+                and update_time = #{updateTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="createTime !=null">
+                and create_time = #{createTime,jdbcType=TIMESTAMP}
+            </if>
+        </trim>
+    </sql>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from im_credit_card
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from im_credit_card
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.czwx.imall.core.domain.CreditCard" >
+    insert into im_credit_card (id, user_id, bank, 
+      card_no, phone, agree_no, 
+      bind_time, bank_code, bank_province, 
+      bank_city, use_now, front_img, 
+      back_img, bank_type, create_time, 
+      update_time)
+    values (#{id,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{bank,jdbcType=VARCHAR}, 
+      #{cardNo,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{agreeNo,jdbcType=VARCHAR}, 
+      #{bindTime,jdbcType=TIMESTAMP}, #{bankCode,jdbcType=VARCHAR}, #{bankProvince,jdbcType=VARCHAR}, 
+      #{bankCity,jdbcType=VARCHAR}, #{useNow,jdbcType=VARCHAR}, #{frontImg,jdbcType=VARCHAR}, 
+      #{backImg,jdbcType=VARCHAR}, #{bankType,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.czwx.imall.core.domain.CreditCard" >
+    insert into im_credit_card
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="bank != null" >
+        bank,
+      </if>
+      <if test="cardNo != null" >
+        card_no,
+      </if>
+      <if test="phone != null" >
+        phone,
+      </if>
+      <if test="agreeNo != null" >
+        agree_no,
+      </if>
+      <if test="bindTime != null" >
+        bind_time,
+      </if>
+      <if test="bankCode != null" >
+        bank_code,
+      </if>
+      <if test="bankProvince != null" >
+        bank_province,
+      </if>
+      <if test="bankCity != null" >
+        bank_city,
+      </if>
+      <if test="useNow != null" >
+        use_now,
+      </if>
+      <if test="frontImg != null" >
+        front_img,
+      </if>
+      <if test="backImg != null" >
+        back_img,
+      </if>
+      <if test="bankType != null" >
+        bank_type,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="bank != null" >
+        #{bank,jdbcType=VARCHAR},
+      </if>
+      <if test="cardNo != null" >
+        #{cardNo,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="agreeNo != null" >
+        #{agreeNo,jdbcType=VARCHAR},
+      </if>
+      <if test="bindTime != null" >
+        #{bindTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="bankCode != null" >
+        #{bankCode,jdbcType=VARCHAR},
+      </if>
+      <if test="bankProvince != null" >
+        #{bankProvince,jdbcType=VARCHAR},
+      </if>
+      <if test="bankCity != null" >
+        #{bankCity,jdbcType=VARCHAR},
+      </if>
+      <if test="useNow != null" >
+        #{useNow,jdbcType=VARCHAR},
+      </if>
+      <if test="frontImg != null" >
+        #{frontImg,jdbcType=VARCHAR},
+      </if>
+      <if test="backImg != null" >
+        #{backImg,jdbcType=VARCHAR},
+      </if>
+      <if test="bankType != null" >
+        #{bankType,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.czwx.imall.core.domain.CreditCard" >
+    update im_credit_card
+    <set >
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="bank != null" >
+        bank = #{bank,jdbcType=VARCHAR},
+      </if>
+      <if test="cardNo != null" >
+        card_no = #{cardNo,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="agreeNo != null" >
+        agree_no = #{agreeNo,jdbcType=VARCHAR},
+      </if>
+      <if test="bindTime != null" >
+        bind_time = #{bindTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="bankCode != null" >
+        bank_code = #{bankCode,jdbcType=VARCHAR},
+      </if>
+      <if test="bankProvince != null" >
+        bank_province = #{bankProvince,jdbcType=VARCHAR},
+      </if>
+      <if test="bankCity != null" >
+        bank_city = #{bankCity,jdbcType=VARCHAR},
+      </if>
+      <if test="useNow != null" >
+        use_now = #{useNow,jdbcType=VARCHAR},
+      </if>
+      <if test="frontImg != null" >
+        front_img = #{frontImg,jdbcType=VARCHAR},
+      </if>
+      <if test="backImg != null" >
+        back_img = #{backImg,jdbcType=VARCHAR},
+      </if>
+      <if test="bankType != null" >
+        bank_type = #{bankType,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.czwx.imall.core.domain.CreditCard" >
+    update im_credit_card
+    set user_id = #{userId,jdbcType=BIGINT},
+      bank = #{bank,jdbcType=VARCHAR},
+      card_no = #{cardNo,jdbcType=VARCHAR},
+      phone = #{phone,jdbcType=VARCHAR},
+      agree_no = #{agreeNo,jdbcType=VARCHAR},
+      bind_time = #{bindTime,jdbcType=TIMESTAMP},
+      bank_code = #{bankCode,jdbcType=VARCHAR},
+      bank_province = #{bankProvince,jdbcType=VARCHAR},
+      bank_city = #{bankCity,jdbcType=VARCHAR},
+      use_now = #{useNow,jdbcType=VARCHAR},
+      front_img = #{frontImg,jdbcType=VARCHAR},
+      back_img = #{backImg,jdbcType=VARCHAR},
+      bank_type = #{bankType,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <update id="update" parameterType="com.czwx.imall.core.domain.CreditCard" >
+    update im_credit_card
+    <set >
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="bank != null" >
+        bank = #{bank,jdbcType=VARCHAR},
+      </if>
+      <if test="cardNo != null" >
+        card_no = #{cardNo,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="agreeNo != null" >
+        agree_no = #{agreeNo,jdbcType=VARCHAR},
+      </if>
+      <if test="bindTime != null" >
+        bind_time = #{bindTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="bankCode != null" >
+        bank_code = #{bankCode,jdbcType=VARCHAR},
+      </if>
+      <if test="bankProvince != null" >
+        bank_province = #{bankProvince,jdbcType=VARCHAR},
+      </if>
+      <if test="bankCity != null" >
+        bank_city = #{bankCity,jdbcType=VARCHAR},
+      </if>
+      <if test="useNow != null" >
+        use_now = #{useNow,jdbcType=VARCHAR},
+      </if>
+      <if test="frontImg != null" >
+        front_img = #{frontImg,jdbcType=VARCHAR},
+      </if>
+      <if test="backImg != null" >
+        back_img = #{backImg,jdbcType=VARCHAR},
+      </if>
+      <if test="bankType != null" >
+        bank_type = #{bankType,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <insert id="save" parameterType="com.czwx.imall.core.domain.CreditCard" >
+    insert into im_credit_card (id, user_id, bank,
+    card_no, phone, agree_no,
+    bind_time, bank_code, bank_province,
+    bank_city, use_now, front_img,
+    back_img, bank_type, create_time,
+    update_time)
+    values (#{id,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{bank,jdbcType=VARCHAR},
+    #{cardNo,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{agreeNo,jdbcType=VARCHAR},
+    #{bindTime,jdbcType=TIMESTAMP}, #{bankCode,jdbcType=VARCHAR}, #{bankProvince,jdbcType=VARCHAR},
+    #{bankCity,jdbcType=VARCHAR}, #{useNow,jdbcType=VARCHAR}, #{frontImg,jdbcType=VARCHAR},
+    #{backImg,jdbcType=VARCHAR}, #{bankType,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP},
+    #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <select id="findSelective" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+    select
+    <include refid="Base_Column_List" />
+    from im_credit_card
+    <include refid="searchBy"/>
+  </select>
+
+  <select id="listSelective" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+    select
+    <include refid="Base_Column_List" />
+    from im_credit_card
+    <include refid="searchBy"/>
+  </select>
+</mapper>

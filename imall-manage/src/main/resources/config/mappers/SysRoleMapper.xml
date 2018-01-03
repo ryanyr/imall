@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.czwx.imall.system.mapper.SysRoleMapper">
+	<resultMap type="java.util.HashMap" id="roleMap">
+		<result column="role_id" property="roleId" />
+		<result column="role_name" property="roleName" />
+		<result column="creator" property="creator" />
+		<result column="create_time" property="createTime" />
+		<result column="audit_sequence" property="auditSequence" />
+		<result column="role_disc" property="roleDisc" />
+	</resultMap>
+	<resultMap type="com.czwx.imall.system.domain.SysRole" id="authorResult">
+		<result column="role_id" property="roleId" />
+		<result column="role_name" property="roleName" />
+		<result column="creator" property="creator" />
+		<result column="create_time" property="createTime" />
+		<result column="audit_sequence" property="auditSequence" />
+		<result column="role_disc" property="roleDisc" />
+	</resultMap>
+
+	<resultMap type="com.czwx.imall.system.domain.SysRole" id="BaseResultMap">
+		<result column="role_id" property="roleId" />
+		<result column="role_name" property="roleName" />
+		<result column="creator" property="creator" />
+		<result column="create_time" property="createTime" />
+	</resultMap>
+
+	<resultMap type="java.util.HashMap" id="roleHashMap">
+		<result column="role_id" property="roleId" />
+		<result column="role_name" property="roleName" />
+	</resultMap>
+
+	<sql id="searchSql">
+		role_id,
+		role_name,
+		creator,
+		create_time
+	</sql>
+
+	<select id="listSysRoleInfo" parameterType="java.util.Map" resultMap="BaseResultMap">
+		select
+		<include refid="searchSql" />
+		from arc_sys_role
+	</select>
+
+	<select id="queryRoleInfoList" resultMap="roleMap"  parameterType="java.util.Map">
+		SELECT a.role_id,a.role_name,a.creator,a.create_time,a.audit_sequence,a.role_disc FROM arc_sys_role AS a
+		<if test="userId != null">
+			left join sys_user_role AS b
+			ON a.role_id = b.role_id
+			WHERE b.user_id  = #{userId} 
+		</if>
+		<where>
+			<if test="roleName!=null">
+				AND a.role_name = #{roleName}
+			</if>
+		</where>
+	</select>
+	<!-- 获取所有审核角色 根据排序号排序 -->
+	<select id="queryAllRoleInfoSort" resultMap="authorResult"  parameterType="java.util.Map">
+		SELECT a.role_id,a.role_name,a.creator,a.create_time,a.audit_sequence,a.role_disc FROM arc_sys_role AS a
+		<where>
+			<if test="roleName!=null">
+				AND a.role_name = #{roleName}
+			</if>
+		</where>
+	</select>
+	
+	<select id="getRoleInfo" resultMap="authorResult"  parameterType="long">
+		SELECT
+		<include refid="searchSql" />
+		FROM arc_sys_role
+		WHERE role_id = #{_parameter}
+	</select>
+
+	<select id="queryRoleInfoBysequence" resultMap="authorResult"  parameterType="java.lang.String">
+		SELECT role_id,role_name,creator,create_time,audit_sequence,role_disc FROM arc_sys_role
+		WHERE audit_sequence =  #{sequence}
+	</select>
+	
+	<insert id="addRoleInfo" useGeneratedKeys="true" keyProperty="roleId" parameterType="com.czwx.imall.system.domain.SysRole">
+		INSERT INTO arc_sys_role(
+			role_name,
+			creator,
+			create_time,
+			audit_sequence,
+			role_disc
+		)VALUES(
+			#{roleName},
+			#{creator},
+			now(),
+			#{auditSequence},
+			#{roleDisc}
+		);
+	</insert>
+	<update id="updateRoleInfo" parameterType="com.czwx.imall.system.domain.SysRole">
+		UPDATE arc_sys_role
+		<set>
+			<if test="roleName != null">
+				role_name = #{roleName },
+			</if>
+			<if test="roleDisc != null">
+				role_disc = #{roleDisc }
+			</if>
+		</set>
+		<where>
+			<if test="roleId!=null">
+				role_id = #{roleId}
+			</if>
+		</where>
+	</update>
+	<insert id="addRolePerm" useGeneratedKeys="true" keyColumn="role_perm_id" parameterType="java.util.Map">
+		INSERT INTO sys_role_perm(
+			role_id,
+			perm_id,
+			creator,
+			create_time
+		)VALUES
+		<if test="permIds!=null">
+			<foreach collection="permIds" separator="," item="item">
+				(#{roleId},#{item},#{creator},now())
+			</foreach>
+		</if>
+	</insert>
+	<delete id="delRolePerm" parameterType="long">
+		DELETE from sys_role_perm where role_id = #{_parameter}; 
+		ALTER TABLE sys_role_perm AUTO_INCREMENT 1;
+	</delete>
+
+	<select id="queryRolesByUserId" resultMap="BaseResultMap" parameterType="long">
+		select u2.role_id, u4.role_name, u4.creator, u4.create_time from arc_sys_user_role u2
+join arc_sys_role u4 on u2.role_id = u4.role_id
+where u2.user_id = #{userId}
+	</select>
+
+
+	<select id="fetchAllRoles" resultMap="roleHashMap">
+		select
+		<include refid="searchSql" />
+		from arc_sys_role
+	</select>
+
+	<insert id="save" parameterType="com.czwx.imall.system.domain.SysRole">
+		<selectKey resultType="long" keyProperty="roleId">
+			SELECT LAST_INSERT_ID() AS role_id
+		</selectKey>
+		insert into arc_sys_role(
+		role_name,
+		remark,
+		creator,
+		update_user,
+		update_time,
+		create_time
+		)
+		values (
+		#{roleName},
+		#{remark},
+		#{creator},
+		#{updateUser},
+		#{updateTime},
+		#{createTime}
+		)
+	</insert>
+	
+</mapper>

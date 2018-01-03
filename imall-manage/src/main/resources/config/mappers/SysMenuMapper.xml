@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.czwx.imall.system.mapper.SysMenuMapper">
+	<resultMap type="com.czwx.imall.system.domain.SysMenu" id="menuInfos">
+		<result property="menuId" column="menu_id" />
+		<result property="menuName" column="menu_name" />
+		<result property="superiorId" column="superior_id" />
+		<result property="linkUrl" column="link_url" />
+		<result property="dispImage" column="disp_image" />
+		<result property="menuOrder" column="menu_order" />
+		<result property="permValid" column="perm_valid" />
+		<result property="validAction" column="valid_action" />
+		<result property="validOper" column="valid_oper" />
+		<result property="status" column="status" />
+		<result property="remark" column="remark" />
+	</resultMap>
+	<resultMap type="com.czwx.imall.system.domain.SysMenu" id="menuMap">
+		<result property="menuId" column="menu_id" />
+		<result property="menuName" column="menu_name" />
+		<result property="superiorId" column="superior_id" />
+		<result property="linkUrl" column="link_url" />
+		<result property="dispImage" column="disp_image" />
+		<result property="menuOrder" column="menu_order" />
+		<result property="permValid" column="perm_valid" />
+		<result property="validAction" column="valid_action" />
+		<result property="validOper" column="valid_oper" />
+		<result property="status" column="status" />
+		<result property="remark" column="remark" />
+	</resultMap>
+
+	<resultMap type="com.czwx.imall.system.domain.SysMenu" id="BaseResultMap">
+		<result property="menuId" column="menu_id" />
+		<result property="menuName" column="menu_name" />
+		<result property="superiorId" column="superior_id" />
+		<result property="linkUrl" column="link_url" />
+		<result property="dispImage" column="disp_image" />
+		<result property="menuOrder" column="menu_order" />
+		<result property="isMenu" column="is_menu" />
+		<result property="status" column="status" />
+		<result property="remark" column="remark" />
+	</resultMap>
+
+	<resultMap type="java.util.Map" id="menuHashMap">
+		<result property="menuId" column="menu_id" />
+		<result property="menuName" column="menu_name" />
+		<result property="superiorId" column="superior_id" />
+		<result property="linkUrl" column="link_url" />
+		<result property="dispImage" column="disp_image" />
+		<result property="menuOrder" column="menu_order" />
+		<result property="permValid" column="perm_valid" />
+		<result property="validAction" column="valid_action" />
+		<result property="validOper" column="valid_oper" />
+		<result property="status" column="status" />
+		<result property="remark" column="remark" />
+		<result column="checked" property="checked" />
+	</resultMap>
+
+	<sql id="searchSql">
+		menu_id, menu_name, superior_id, link_url, disp_image, menu_order, is_menu, status, remark
+	</sql>
+
+	<select id="queryMenuInfo" parameterType="long" resultMap="menuInfos">
+		SELECT
+		p3.*
+		FROM
+		arc_sys_menu p3
+		WHERE
+		p3.menu_id IN (
+		SELECT DISTINCT
+		menu_id
+		FROM
+		arc_sys_role_menu p1,
+		arc_sys_user_role p2
+		WHERE
+		p1.role_id = p2.role_id
+		AND p2.user_id = #{userId}
+		)
+	</select>
+
+	<select id="queryMenu" resultMap="menuMap">
+		SELECT menu_id,menu_name,superior_id FROM arc_sys_menu where status=0
+	</select>
+
+	<select id="listSysMenu" resultMap="menuMap">
+		SELECT
+		<include refid="searchSql" />
+		FROM arc_sys_menu
+		where status=0
+	</select>
+
+	<select id="fetchAllMenu" resultMap="menuHashMap">
+		SELECT
+		<include refid="searchSql" />
+		FROM arc_sys_menu
+		where status=0
+	</select>
+
+	<select id="getRoleSysMenu" resultType="java.util.HashMap"
+			parameterType="long">
+		SELECT DISTINCT
+		rm.menu_id
+		FROM
+		arc_sys_role_menu rm
+		JOIN arc_sys_menu menu ON menu.id = rm.menu_id
+		WHERE
+		rm.role_id IN ( #{roleIds} )
+		AND NOT EXISTS (
+		SELECT
+		1
+		FROM
+		arc_sys_menu
+		WHERE
+		parent_id = rm.menu_id
+		)
+	</select>
+
+	<select id="fetchRoleMenuHas" resultMap="menuHashMap"
+			parameterType="long">
+		SELECT
+		if(rm.role_id is not null, 1, 0) as checked,
+		menu.menu_name,
+		menu.menu_id,
+		menu.superior_id
+		FROM
+		arc_sys_menu menu
+		LEFT JOIN arc_sys_role_menu rm ON rm.menu_id = menu.menu_id
+		AND role_id = #{roleId}
+	</select>
+
+	<insert id="insertmap" parameterType="java.util.HashMap">
+		<selectKey resultType="long" keyProperty="menuId">
+			SELECT LAST_INSERT_ID() AS menu_id
+		</selectKey>
+		insert into arc_sys_menu(
+		menu_name,
+		superior_id,
+		link_url,
+		disp_image,
+		menu_order,
+		is_menu,
+		status,
+		remark,
+		create_time
+		)
+		values (
+		#{menuName},
+		#{superiorId},
+		#{linkUrl},
+		#{dispImage},
+		#{menuOrder},
+		#{isMenu},
+		#{status},
+		#{remark},
+		NOW()
+		)
+	</insert>
+
+	<update id="updateMenu" parameterType="java.util.Map">
+		update arc_sys_menu
+		<trim prefix="SET" suffixOverrides=",">
+			update_time= NOW(),
+			<if test="menuName!=null">
+				menu_name = #{menuName},
+			</if>
+			<if test="superiorId!=null">
+				superior_id = #{superiorId},
+			</if>
+			<if test="linkUrl!=null">
+				link_url = #{linkUrl},
+			</if>
+			<if test="dispImage!=null">
+				disp_image = #{dispImage},
+			</if>
+			<if test="menu_order!=null">
+				menu_order = #{menuOrder},
+			</if>
+			<if test="isMenu!=null">
+				is_menu = #{isMenu},
+			</if>
+			<if test="status!=null">
+				status = #{status},
+			</if>
+			<if test="remark!=null">
+				remark = #{remark},
+			</if>
+		</trim>
+		where
+		menu_id = #{menuId}
+	</update>
+	
+	<select id="findByPrimary" parameterType="long" resultMap="BaseResultMap">
+		SELECT
+		<include refid="searchSql" />
+		FROM arc_sys_menu
+		where menu_id = #{menuId}
+	</select>
+	
+</mapper>

@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.czwx.imall.core.mapper.UserCouponMapper" >
+  <resultMap id="BaseResultMap" type="com.czwx.imall.core.domain.UserCoupon" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+    <result column="order_no" property="orderNo" jdbcType="BIGINT" />
+    <result column="coupon_no" property="couponNo" jdbcType="VARCHAR" />
+    <result column="coupon_name" property="couponName" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+    <result column="scenes" property="scenes" jdbcType="VARCHAR" />
+    <result column="amount" property="amount" jdbcType="BIGINT" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+    <result column="threshold" property="threshold" jdbcType="BIGINT" />
+    <result column="state" property="state" jdbcType="VARCHAR" />
+    <result column="valid_start_time" property="validStartTime" jdbcType="TIMESTAMP" />
+    <result column="valid_end_time" property="validEndTime" jdbcType="TIMESTAMP" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <!--基本的sql查询字段 公共引用...-->
+  <sql id="Base_Column_List" >
+    id, user_id, coupon_no, coupon_name, type, scenes, amount, description, threshold, 
+    state, valid_start_time, valid_end_time, create_time, update_time,order_No
+  </sql>
+  
+  <!-- 基本的sql查询条件公共引用 -->
+    <sql id="searchBy">
+        <trim prefix="where" prefixOverrides="and|or">
+            <if test="id != null and id != ''">
+                id  = #{id,jdbcType=BIGINT}
+            </if>
+			<if test="userId != null and userId != ''">
+                and user_id = #{userId,jdbcType=BIGINT}
+            </if>
+			<if test="couponNo != null and couponNo != ''">
+                and coupon_no = #{couponNo,jdbcType=VARCHAR}
+            </if>
+			<if test="couponName != null and couponName != ''">
+                and coupon_name = #{couponName,jdbcType=VARCHAR}
+            </if>
+            <if test="type != null and type != ''">
+                and type = #{type,jdbcType=VARCHAR}
+            </if>
+			<if test="scenes != null and scenes != ''">
+                and scenes = #{scenes,jdbcType=VARCHAR}
+            </if>
+			<if test="amount != null and amount != ''">
+                and amount = #{amount,jdbcType=BIGINT}
+            </if>
+            <if test="description != null and description != ''">
+                and description = #{description,jdbcType=VARCHAR}
+            </if>
+			<if test="threshold != null and threshold != ''">
+                and threshold = #{threshold,jdbcType=BIGINT}
+            </if>
+			<if test="state != null and state != ''">
+                and state = #{state,jdbcType=VARCHAR}
+            </if>
+			<if test="validStartTime !=null">
+                and valid_start_time = #{validStartTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="validEndTime !=null">
+                and valid_end_time = #{validEndTime,jdbcType=TIMESTAMP}
+            </if>
+			<if test="updateTime !=null">
+                and update_time = #{updateTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="createTime !=null">
+                and create_time = #{createTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="orderNo != null and orderNo != ''">
+                and order_No = #{orderNo,jdbcType=INTEGER}
+            </if>
+        </trim>
+    </sql>
+
+  <select id="listSelective" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+    select
+    <include refid="Base_Column_List"/>
+    from im_user_coupon
+    <include refid="searchBy"/>
+  </select>
+
+  <select id="listValid" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+    select
+    <include refid="Base_Column_List"/>
+    from im_user_coupon
+    where  user_id = #{userId,jdbcType=INTEGER}
+    and state = #{state,jdbcType=VARCHAR}
+    and valid_end_time > #{nowTime,jdbcType=TIMESTAMP}
+  </select>
+
+  <select id="listByOrderNo" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select
+    <include refid="Base_Column_List"/>
+    from im_user_coupon
+    where order_no = #{orderNo,jdbcType=VARCHAR}
+  </select>
+
+  <select id="findByCouponNo" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select
+    <include refid="Base_Column_List"/>
+    from im_user_coupon
+    where coupon_no = #{couponNo,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from im_user_coupon
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from im_user_coupon
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="save" parameterType="com.czwx.imall.core.domain.UserCoupon" >
+    insert into im_user_coupon (id, user_id, coupon_no, 
+      coupon_name, type, scenes, 
+      amount, description, threshold, 
+      state, valid_start_time, valid_end_time, 
+      create_time, update_time,order_no)
+    values (#{id,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{couponNo,jdbcType=VARCHAR}, 
+      #{couponName,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, #{scenes,jdbcType=VARCHAR}, 
+      #{amount,jdbcType=BIGINT}, #{description,jdbcType=VARCHAR}, #{threshold,jdbcType=BIGINT},
+      #{state,jdbcType=VARCHAR}, #{validStartTime,jdbcType=TIMESTAMP}, #{validEndTime,jdbcType=TIMESTAMP}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{orderNo,jdbcType=BIGINT})
+  </insert>
+
+  <update id="updateByCouponNo" parameterType="com.czwx.imall.core.domain.UserCoupon" >
+    update im_user_coupon
+    <set >
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="couponName != null" >
+        coupon_name = #{couponName,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="scenes != null" >
+        scenes = #{scenes,jdbcType=VARCHAR},
+      </if>
+      <if test="amount != null" >
+        amount = #{amount,jdbcType=BIGINT},
+      </if>
+      <if test="description != null" >
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="threshold != null" >
+        threshold = #{threshold,jdbcType=BIGINT},
+      </if>
+      <if test="state != null" >
+        state = #{state,jdbcType=VARCHAR},
+      </if>
+      <if test="validStartTime != null" >
+        valid_start_time = #{validStartTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="validEndTime != null" >
+        valid_end_time = #{validEndTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="orderNo != null">
+        order_no = #{orderNo,jdbcType=INTEGER}
+      </if>
+    </set>
+    where coupon_no = #{couponNo,jdbcType=VARCHAR}
+  </update>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.czwx.imall.core.domain.UserCoupon" >
+    update im_user_coupon
+    <set >
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="couponNo != null" >
+        coupon_no = #{couponNo,jdbcType=VARCHAR},
+      </if>
+      <if test="couponName != null" >
+        coupon_name = #{couponName,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="scenes != null" >
+        scenes = #{scenes,jdbcType=VARCHAR},
+      </if>
+      <if test="amount != null" >
+        amount = #{amount,jdbcType=BIGINT},
+      </if>
+      <if test="description != null" >
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="threshold != null" >
+        threshold = #{threshold,jdbcType=BIGINT},
+      </if>
+      <if test="state != null" >
+        state = #{state,jdbcType=VARCHAR},
+      </if>
+      <if test="validStartTime != null" >
+        valid_start_time = #{validStartTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="validEndTime != null" >
+        valid_end_time = #{validEndTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.czwx.imall.core.domain.UserCoupon" >
+    update im_user_coupon
+    set user_id = #{userId,jdbcType=BIGINT},
+      coupon_no = #{couponNo,jdbcType=VARCHAR},
+      coupon_name = #{couponName,jdbcType=VARCHAR},
+      type = #{type,jdbcType=VARCHAR},
+      scenes = #{scenes,jdbcType=VARCHAR},
+      amount = #{amount,jdbcType=BIGINT},
+      description = #{description,jdbcType=VARCHAR},
+      threshold = #{threshold,jdbcType=BIGINT},
+      state = #{state,jdbcType=VARCHAR},
+      valid_start_time = #{validStartTime,jdbcType=TIMESTAMP},
+      valid_end_time = #{validEndTime,jdbcType=TIMESTAMP},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="findOverdueCoupon" resultMap="BaseResultMap" parameterType="java.lang.Long">
+    select
+    <include refid="Base_Column_List"/>
+    from im_user_coupon
+    where user_id = #{userId,jdbcType=BIGINT} and ( DATE_FORMAT(valid_end_time, '%Y-%m-%d') &lt; DATE_FORMAT(NOW(), '%Y-%m-%d') or state='30')
+  </select>
+
+  <select id="findEnableCoupon" resultMap="BaseResultMap" parameterType="java.lang.Long">
+    select
+    <include refid="Base_Column_List"/>
+    from im_user_coupon
+    where user_id = #{userId,jdbcType=BIGINT} and ( DATE_FORMAT(valid_end_time, '%Y-%m-%d') &gt; DATE_FORMAT(NOW(), '%Y-%m-%d')) and state='10'
+  </select>
+
+  <select id="findByUserId" resultMap="BaseResultMap" parameterType="java.lang.Long">
+    select
+    <include refid="Base_Column_List"/>
+    from im_user_coupon
+    where user_id = #{userId,jdbcType=BIGINT}
+  </select>
+</mapper>

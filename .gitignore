@@ -1,0 +1,14 @@
+# Package Files #
+.settings
+.sonar
+.project
+.classpath
+.idea
+target
+node_modules
+build
+dev/*.html
+.externalToolBuilders
+sonar-project.properties
+.metadata
+*.iml

@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.czwx.imall.system.mapper.SysUserMapper">
+	<resultMap type="com.czwx.imall.system.domain.SysUser" id="authorResult">
+		<result column="user_id" property="userId"/>
+		<result column="user_name" property="userName"/>
+		<result column="true_name" property="trueName"/>
+		<result column="password" property="password"/>
+		<result column="phone" property="phone"/>
+		<result column="email" property="email"/>
+		<result column="user_status" property="userStatus"/>
+		<result column="create_time" property="createTime"/>
+		<result column="update_time" property="updateTime"/>
+		<result column="login_time" property="loginTime"/>
+		<result column="salt" property="salt"/>
+	</resultMap>
+	<resultMap type="com.czwx.imall.system.domain.SysUser" id="BaseResultMap">
+		<result column="user_id" property="userId"/>
+		<result column="user_name" property="userName"/>
+		<result column="true_name" property="trueName"/>
+		<result column="password" property="password"/>
+		<result column="phone" property="phone"/>
+		<result column="email" property="email"/>
+		<result column="user_status" property="userStatus"/>
+		<result column="create_time" property="createTime"/>
+		<result column="update_time" property="updateTime"/>
+		<result column="login_time" property="loginTime"/>
+		<result column="salt" property="salt"/>
+	</resultMap>
+
+	<sql id="searchSql">
+		user_id,
+		user_name,
+		true_name,
+		password,
+		phone,
+		email,
+		user_status,
+		create_time,
+		update_time,
+		login_time,
+		salt
+	</sql>
+
+	<select id="listSysUserInfo" parameterType="java.util.Map" resultMap="authorResult">
+		select
+		<include refid="searchSql" />
+		from arc_sys_user
+		<where>
+			<if test="phone !=null and phone != ''">
+				and phone like '%${phone}%'
+			</if>
+			<if test="realName !=null and realName != ''">
+				and true_name like '%${realName}%'
+			</if>
+		</where>
+	</select>
+
+	<select id="findByPrimary" resultMap="BaseResultMap" parameterType="long">
+		select
+		<include refid="searchSql" />
+		from arc_sys_user
+		WHERE user_id = #{userId}
+	</select>
+
+	<insert id="save" parameterType="com.czwx.imall.system.domain.SysUser" >
+		<selectKey resultType="long" keyProperty="userId">
+			SELECT
+			LAST_INSERT_ID() AS user_id
+		</selectKey>
+		INSERT INTO arc_sys_user (
+		user_name,
+		true_name,
+		PASSWORD,
+		salt,
+		phone,
+		email,
+		user_status,
+		create_time,
+		update_time,
+		login_time
+		)
+		VALUES
+		(
+		#{userName},
+		#{trueName},
+		#{password},
+		#{salt},
+		#{phone},
+		#{email},
+		#{userStatus},
+		now(),
+		now(),
+		now())
+	</insert>
+
+	<select id="queryUser" resultType="com.czwx.imall.system.domain.SysUser" parameterType="java.lang.Integer">
+		SELECT user_id,user_name,true_name,salt,phone,email,create_time,update_time,login_time FROM arc_sys_user
+		<where>
+			<if test="_parameter!=-1">
+				user_id = #{_parameter}
+			</if>
+		</where>
+	</select>
+
+	<select id="queryUserByParam" resultMap="authorResult" parameterType="java.util.Map">
+		SELECT user_id,user_name,true_name,salt,phone,email,create_time,update_time,login_time FROM arc_sys_user
+		<where>
+			<if test="phone !=null">
+				and phone like '%${phone}%'
+			</if> 
+			<if test="trueName !=null">
+				and true_name like '%${trueName}%'
+			</if>
+		</where>
+	</select>
+	<select id="queryUserByUserIdAndPassword" resultType="Integer" parameterType="java.util.Map">
+		SELECT count(user_id) FROM arc_sys_user WHERE user_id=#{userId} and password = #{password}
+	</select>
+	<select id="queryUserByName" resultMap="authorResult" parameterType="java.lang.String">
+		SELECT * FROM arc_sys_user WHERE user_name=#{userName}
+	</select>
+	<insert id="addUserInfo" useGeneratedKeys="true" keyProperty="user_id"
+		parameterType="com.czwx.imall.system.domain.SysUser">
+		INSERT INTO arc_sys_user (
+		user_name,
+		true_name,
+		PASSWORD,
+		salt,
+		phone,
+		email,
+		user_status,
+		create_time,
+		update_time,
+		login_time
+		)
+		VALUES
+		(
+		#{user_name},
+		#{true_name},
+		#{password},
+		#{salt},
+		#{phone},
+		#{email},
+		#{user_status},
+		now(),
+		now(),
+		now()) 
+	</insert>
+	
+	<update id="updateUser" parameterType="java.util.Map">
+		UPDATE arc_sys_user
+		<set>
+			<if test="password!=null">
+				password = #{password},
+			</if>
+			<if test="salt!=null">
+				salt = #{salt},
+			</if>
+			<if test="userName!=null">
+				user_name = #{userName},
+			</if>
+			<if test="trueName!=null">
+				true_name = #{trueName},
+			</if>
+			<if test="phone!=null">
+				phone = #{phone},
+			</if>
+			<if test="email!=null">
+				email = #{email},
+			</if>
+			<if test="loginTime!=null">
+				login_time = now(),
+			</if>
+			<if test="updateTime!=null">
+				update_time = now()
+			</if>
+		</set>
+		WHERE user_id =#{userId}
+	</update>
+
+	<delete id="delUserInfo" parameterType="java.util.Map">
+		DELETE FROM arc_sys_user WHERE user_id = #{userId};
+	</delete>
+
+	<select id="getUsersByRoleName" resultType="com.czwx.imall.system.domain.SysUser" >
+		SELECT
+			user_id,
+			user_name,
+			true_name,
+			salt,
+			phone,
+			email,
+			create_time,
+			update_time,
+			login_time
+		FROM
+			arc_sys_user
+		WHERE
+			user_id IN (
+				SELECT
+					user_id
+				FROM
+					sys_user_role
+				WHERE
+					role_id IN (
+						SELECT
+							role_id
+						FROM
+							arc_sys_role
+						WHERE
+							role_name IN 
+							<foreach collection="array" item="item" open="(" separator="," close=")">
+								#{item}
+							</foreach>
+					)
+			)
+	</select>
+	
+	<!-- 通过真实姓名查询用户信息 -->
+	<select id="queryByTrueName" parameterType="String" resultType="com.czwx.imall.system.domain.SysUser">
+		select  * from arc_sys_user where true_name like '%${value}%'
+	</select>
+
+</mapper>

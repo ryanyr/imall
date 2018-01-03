@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+    
+ <mapper namespace="com.czwx.imall.system.mapper.SysPermMapper">
+    <resultMap type="com.czwx.imall.system.domain.SysPerm" id="authorResult">
+    	    <result property="permId" column="perm_id"/>   
+	        <result property="permName" column="perm_name"/>  
+	        <result property="permString" column="perm_string"/>  
+	        <result property="creator" column="creator"/>
+	        <result property="createTime" column="create_time"/>
+    </resultMap> 
+    <select id="queryPermInfo"  parameterType="Integer"  resultType="com.czwx.imall.system.domain.SysPerm">
+			SELECT 
+			  a.perm_id,
+			  a.perm_name,
+			  a.perm_string,
+			  a.creator,
+			  a.create_time
+			FROM
+			  sys_perm_info a,
+			  arc_sys_role r,
+			  sys_user_role u,
+			  sys_role_perm p 
+			<where> u.role_id = r.role_id 
+			  AND r.role_id = p.role_id 
+			  AND p.perm_id = a.perm_id 
+			  AND u.user_id = #{userId}
+		  </where>
+     </select>
+
+ 	 <select id="queryPermInfoList" resultMap="authorResult">
+	 	SELECT perm_id,perm_name,perm_string,creator,create_time FROM sys_perm_info 
+	 </select>
+ </mapper>

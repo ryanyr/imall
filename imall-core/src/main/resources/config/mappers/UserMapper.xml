@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- arc_user表:用户管理模块 -->
+<mapper namespace="com.czwx.imall.core.mapper.UserMapper">
+    <resultMap id="BaseResultMap" type="com.czwx.imall.core.domain.User" >
+        <id column="id" property="id" jdbcType="BIGINT" />
+        <result column="login_name" property="loginName" jdbcType="VARCHAR" />
+        <result column="login_pwd" property="loginPwd" jdbcType="VARCHAR" />
+        <result column="loginpwd_modify_time" property="loginpwdModifyTime" jdbcType="TIMESTAMP" />
+        <result column="regist_time" property="registTime" jdbcType="TIMESTAMP" />
+        <result column="register_client" property="registerClient" jdbcType="VARCHAR" />
+        <result column="trade_pwd" property="tradePwd" jdbcType="VARCHAR" />
+        <result column="tradepwd_modify_time" property="tradepwdModifyTime" jdbcType="TIMESTAMP" />
+        <result column="uuid" property="uuid" jdbcType="VARCHAR" />
+        <result column="channel_id" property="channelId" jdbcType="BIGINT" />
+        <result column="level" property="level" jdbcType="VARCHAR" />
+        <result column="register_ip" property="registerIp" jdbcType="VARCHAR" />
+        <result column="login_ip" property="loginIp" jdbcType="VARCHAR" />
+        <result column="login_time" property="loginTime" jdbcType="TIMESTAMP" />
+    </resultMap>
+    <sql id="Base_Column_List" >
+         id,login_name,login_pwd,loginpwd_modify_time,regist_time,register_client,trade_pwd,tradepwd_modify_time,uuid,invitation_code,level,
+         channel_id,register_ip,login_ip,login_time
+    </sql>
+
+    <sql id="searchModelBy">
+        <trim prefix="where" prefixOverrides="and|or">
+            <if test="dateNowStr !='' and dateNowStr !=null">
+                regist_time like concat("%",#{dateNowStr,jdbcType=VARCHAR},"%")
+            </if>
+        </trim>
+    </sql>
+
+    <select id="selectRegisterCount" resultType="java.lang.Long" parameterType="java.lang.String" >
+        select
+        COUNT(*)
+        from im_user
+        <include refid="searchCountBy" />
+    </select>
+
+    <select id="selectLoginCount" resultType="java.lang.Long" parameterType="java.lang.String" >
+        select
+        COUNT(*)
+        from im_user
+        where login_time like concat("%",#{dateNowStr,jdbcType=VARCHAR},"%")
+    </select>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+        select
+        <include refid="Base_Column_List" />
+        from im_user
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <select id="selectByUserId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+        select
+        <include refid="Base_Column_List" />
+        from im_user
+        where id = #{userId,jdbcType=BIGINT}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+        delete from im_user
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+    <insert id="insert" parameterType="com.czwx.imall.core.domain.User" >
+       insert into im_user (id,login_name,login_pwd,loginpwd_modify_time,
+        regist_time,register_client,trade_pwd,tradepwd_modify_time,uuid,invitation_code,level,
+         channel_id,register_ip,login_ip,login_time
+        )
+        values (#{id,jdbcType=BIGINT}, #{uuid,jdbcType=VARCHAR}, #{loginName,jdbcType=VARCHAR},
+        #{loginPwd,jdbcType=VARCHAR}, #{loginpwdModifyTime,jdbcType=TIMESTAMP},#{tradepwdModifyTime,jdbcType=TIMESTAMP},
+        #{registTime,jdbcType=TIMESTAMP}, #{loginTime,jdbcType=TIMESTAMP}, #{tradePwd,jdbcType=VARCHAR}
+        ,#{registerIp,jdbcType=VARCHAR},#{loginIp,jdbcType=VARCHAR},
+        #{level,jdbcType=VARCHAR},#{channelId,jdbcType=BIGINT},#{invitationCode,jdbcType=VARCHAR},#{registerClient,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="com.czwx.imall.core.domain.User" >
+        insert into im_user
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                id,
+            </if>
+            <if test="uuid != null" >
+                uuid,
+            </if>
+            <if test="loginName != null" >
+                login_name,
+            </if>
+            <if test="loginPwd != null" >
+                login_pwd,
+            </if>
+            <if test="pwdInvalidTime != null" >
+                pwd_invalid_time,
+            </if>
+            <if test="channelId != null" >
+                channel_id,
+            </if>
+            <if test="registTime != null" >
+                regist_time,
+            </if>
+            <if test="loginTime != null" >
+                login_time,
+            </if>
+            <if test="createTime != null" >
+                create_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="uuid != null" >
+                #{uuid,jdbcType=VARCHAR},
+            </if>
+            <if test="loginName != null" >
+                #{loginName,jdbcType=VARCHAR},
+            </if>
+            <if test="loginPwd != null" >
+                #{loginPwd,jdbcType=VARCHAR},
+            </if>
+            <if test="pwdInvalidTime != null" >
+                #{pwdInvalidTime,jdbcType=INTEGER},
+            </if>
+            <if test="channelId != null" >
+                #{channelId,jdbcType=INTEGER},
+            </if>
+            <if test="registTime != null" >
+                #{registTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="loginTime != null" >
+                #{loginTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.czwx.imall.core.domain.User" >
+        update im_user
+        <set >
+            <if test="loginName != null and loginName != '' ">
+                login_name = #{loginName,jdbcType=VARCHAR},
+            </if>
+            <if test="loginPwd != null and loginPwd != '' ">
+                login_pwd = #{loginPwd,jdbcType=VARCHAR},
+            </if>
+            <if test="loginpwdModifyTime != null ">
+                loginpwd_modify_time = #{loginpwdModifyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="registTime != null ">
+                regist_time = #{registTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="registerClient != null and registerClient != '' ">
+                register_client = #{registerClient,jdbcType=VARCHAR},
+            </if>
+            <if test="tradePwd != null and tradePwd != '' ">
+                trade_pwd = #{tradePwd,jdbcType=VARCHAR},
+            </if>
+            <if test="tradepwdModifyTime != null">
+                tradepwd_modify_time = #{tradepwdModifyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="uuid != null and uuid != '' ">
+                uuid = #{uuid,jdbcType=VARCHAR},
+            </if>
+            <if test="invitationCode != null and invitationCode != '' ">
+                invitation_code = #{invitationCode,jdbcType=VARCHAR},
+            </if>
+            <if test="level != null and level != ''">
+                level = #{level,jdbcType=VARCHAR},
+            </if>
+            <if test="registerIp != null and registerIp != ''">
+                register_ip = #{registerIp,jdbcType=VARCHAR},
+            </if>
+            <if test="loginIp != null and loginIp != ''">
+                login_ip = #{loginIp,jdbcType=VARCHAR},
+            </if>
+            <if test="loginTime != null">
+                login_time = #{loginTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.czwx.imall.core.domain.User" >
+        update im_user set
+            login_name = #{loginName,jdbcType=VARCHAR},
+            login_pwd = #{loginPwd,jdbcType=VARCHAR},
+            loginpwd_modify_time = #{loginpwdModifyTime,jdbcType=TIMESTAMP},
+            regist_time = #{registTime,jdbcType=TIMESTAMP},
+            register_client = #{registerClient,jdbcType=VARCHAR},
+            trade_pwd = #{tradePwd,jdbcType=VARCHAR},
+            tradepwd_modify_time = #{tradepwdModifyTime,jdbcType=TIMESTAMP},
+            uuid = #{uuid,jdbcType=VARCHAR},
+            invitation_code = #{invitationCode,jdbcType=VARCHAR},
+            level = #{level,jdbcType=VARCHAR},
+            channel_id=#{channelId,jdbcType=BIGINT},
+            register_ip=#{registerIp,jdbcType=VARCHAR},
+            login_ip=#{loginIp,jdbcType=VARCHAR},
+            login_time=#{loginTime,jdbcType=TIMESTAMP}
+        where id = #{id ,jdbcType=BIGINT}
+    </update>
+
+    <select id="findByLoginName" resultMap="BaseResultMap" parameterType="java.lang.String">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM `im_user` WHERE login_name = #{loginName,jdbcType=VARCHAR}
+    </select>
+    <insert id="save" parameterType="com.czwx.imall.core.domain.User">
+      insert into im_user ( id,uuid,login_name,login_pwd,loginpwd_modify_time,tradepwd_modify_time,
+        regist_time,login_time,trade_pwd,register_ip,login_ip,level,channel_id
+        ,invitation_code,register_client
+        )
+        values (#{id,jdbcType=BIGINT}, #{uuid,jdbcType=VARCHAR}, #{loginName,jdbcType=VARCHAR},
+        #{loginPwd,jdbcType=VARCHAR}, #{loginpwdModifyTime,jdbcType=TIMESTAMP},#{tradepwdModifyTime,jdbcType=TIMESTAMP},
+        #{registTime,jdbcType=TIMESTAMP}, #{loginTime,jdbcType=TIMESTAMP}, #{tradePwd,jdbcType=VARCHAR},
+        #{registerIp,jdbcType=VARCHAR},#{loginIp,jdbcType=VARCHAR},
+        #{level,jdbcType=VARCHAR},#{channelId,jdbcType=BIGINT},#{invitationCode,jdbcType=VARCHAR},#{registerClient,jdbcType=VARCHAR})
+    </insert>
+
+    <select id="findByInvitationCode" resultMap="BaseResultMap" parameterType="java.lang.String" >
+        select
+        <include refid="Base_Column_List" />
+        from im_user
+        where invitation_code = #{invitationCode,jdbcType=VARCHAR}
+    </select>
+
+    <!--返回用户的基本信息Map-->
+    <resultMap id="BaseInfoModelMap"  extends="BaseResultMap"  type="com.czwx.imall.core.model.ImUserModel">
+        <result column="real_name" property="realName" jdbcType="VARCHAR" />
+        <result column="id_no" property="idNo" jdbcType="VARCHAR" />
+        <result column="id_addr" property="idAddr" jdbcType="VARCHAR" />
+        <result column="company_name" property="companyName" jdbcType="VARCHAR" />
+        <result column="sex" property="sex" jdbcType="VARCHAR" />
+        <result column="phone" property="phone" jdbcType="VARCHAR" />
+        <result column="certificate_no" property="certificateNo" jdbcType="VARCHAR" />
+        <result column="title" property="title" jdbcType="VARCHAR" />
+        <result column="title_img" property="titleImg" jdbcType="VARCHAR" />
+        <result column="living_img" property="livingImg" jdbcType="VARCHAR" />
+        <result column="front_img" property="frontImg" jdbcType="VARCHAR" />
+        <result column="back_img" property="backImg" jdbcType="VARCHAR" />
+        <result column="create_time" property="createTime" jdbcType="VARCHAR" />
+        <result column="update_time" property="updateTime" jdbcType="VARCHAR" />
+        <result column="state" property="state" jdbcType="VARCHAR" />
+        <result column="card_no" property="cardNo" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <!-- 基本用户信息的sql查询条件公共引用 -->
+    <sql id="searchBaseBy">
+        <trim prefix="where" prefixOverrides="and|or">
+            <if test="loginName !='' and loginName !=null">
+                and u.login_name like concat("%",#{loginName,jdbcType=VARCHAR},"%")
+            </if>
+            <if test="registTime !=null">
+                and DATE_FORMAT(u.regist_time,'%Y-%m-%d') = #{registTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="startTime != null">
+                and u.regist_time &gt; #{startTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="endTime  != null">
+                and u.regist_time &lt; #{endTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="realName !='' and realName !=null">
+                and a.real_name like concat("%",#{realName,jdbcType=VARCHAR},"%")
+            </if>
+            <if test="idNo !='' and idNo !=null">
+                and a.id_no  like concat("%",#{idNo,jdbcType=VARCHAR},"%")
+            </if>
+            <if test="state !='' and state !=null">
+                and a.state  =#{state,jdbcType=VARCHAR}
+            </if>
+        </trim>
+    </sql>
+
+    <select id="listModel" resultMap="BaseInfoModelMap" parameterType="java.util.HashMap">
+        SELECT
+        u.id,
+        u.login_name,
+        u.regist_time,
+        u.register_client,
+        u.channel_id,
+        u.register_ip,
+        u.login_ip,
+        u.login_time,
+        a.real_name,
+        a.id_no,
+        a.company_name,
+        a.sex,
+        a.phone,
+        a.certificate_no,
+        a.title,
+        a.create_time,
+        a.update_time,
+        a.state
+        FROM
+        im_user u
+        LEFT JOIN im_user_base_info a ON u.id = a.user_id
+        <include refid="searchBaseBy"/>
+        order by u.id desc
+    </select>
+
+    <!--用户的基本信息的sql查询字段 公共引用...-->
+    <sql id="Base_User_Column_List">
+        u.id,
+        u.login_name,
+        u.login_pwd,
+        u.loginpwd_modify_time,
+        u.regist_time,
+        u.register_client,
+        u.trade_pwd,
+        u.tradepwd_modify_time,
+        u.uuid,
+        u.invitation_code,
+        u.register_ip,
+        u.login_ip,
+        u.login_time,
+        a.real_name,
+        a.id_no,
+        a.id_addr,
+        a.certificate_no,
+        a.title,
+        a.title_img,
+        a.company_name,
+        a.phone,
+        a.create_time,
+        a.update_time,
+        a.living_img,
+        a.front_img,
+        a.back_img,
+        cc.card_no as creditCardNo,
+        cc.bank as creditBank,
+        cc.front_img as creditFrontImg,
+        cc.back_img as creditBackImg,
+        bc.card_no,
+        bc.bank,
+        bc.front_img as bankFrontImg,
+        bc.back_img as bankBackImg,
+        ua.certificate_img as certificateImg
+    </sql>
+
+    <select id="getModel" resultMap="BaseInfoModelMap" parameterType="java.lang.Long">
+        select
+        <include refid="Base_User_Column_List" />
+        from  im_user  u  left join  im_user_base_info  a  on u.id=a.user_id
+        left join  im_bank_card  bc  on u.id=bc.user_id
+        left join  im_credit_card  cc  on u.id=cc.user_id
+        left join im_user_auth ua on u.id = ua.user_id
+        where u.id = #{id,jdbcType=BIGINT}
+    </select>
+
+</mapper>

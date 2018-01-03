@@ -1,0 +1,29 @@
+@charset "utf-8";
+/* CSS Document */
+/*----  分页  ---
+.pagination{text-align:center;padding-top:10px;color:#103B7C;}
+.pagination a, .page-skip, .page-cur { display:inline-block;  font-family: Arial,SimSun;    font-size: 13px;    height: 23px;    line-height: 23px;    margin-right: 5px;    min-width: 15px;    overflow: hidden;    padding: 0 5px;    text-align: center;    vertical-align: middle;    white-space: nowrap;}
+.pagination a {    background-color: #FFFFFF;    border: 1px solid #C5C5C5;color:#103B7C;}
+.pagination a:hover {    border: 1px solid #FF5500;    text-decoration: none;}
+.pagination .page-prev, .pagination .page-next {    background-color: #FFFFFF;    font-size: 12px;    width: auto;  font-family: "宋体";}
+.pagination .page-cur {    background-color: #B5EAFB;    border: 1px solid #1B9ECA;    color: #030000;    font-weight: 700;}
+.pagination .page-skip {    color: #103B7C;    width: auto;}
+.pagination .page-skip input {    border: 1px solid #999999;    font-family: Arial,SimSun;    height: 18px;    margin: 0 5px;    text-align: center;    vertical-align: top;    width: 30px;}
+.pagination .page-skip button {display:inline-block; background:url(../images/button.png) -178px -150px no-repeat;  border: 0 none;    cursor: pointer;    height: 20px;    margin: 0 0 0 5px;      width: 55px;color:#fff;}
+*/
+.clearall{margin: 0 auto;text-align: center;}
+.pagination{text-align:right;padding:5px 0;color:#666666;font-family:'黑体',Arial,SimSun;}
+.pagination,.pagination *{-webkit-box-sizing:content-box;box-sizing:content-box;}
+.pagination .page-break{margin: 0 5px;display: inline-block;height:26px;line-height:26px;}
+.pagination a,.page-skip,.page-cur{display:inline-block;font-size:13px;height:26px;line-height:26px;margin-right:5px;min-width:15px;text-align:center;vertical-align:middle;white-space:nowrap;padding:0 6px;border-radius: 4px;}
+.pagination a{background-color:#f1eff1;color:#666666;text-decoration:none;}
+.pagination a:hover{background-color:#bbc1c9;color: #fff;}
+.pagination .page-prev,.pagination .page-next{background-color:#f1eff1;}
+.pagination .page-cur{background-color:#bbc1c9;color:#fff;font-weight:700;}
+.pagination .page-skip{color:#666;width:20px;}
+.pagination .page-go {color: #666;width: 20px;}
+.pagination .page-skip input{border:1px solid #999;font-family:Arial,SimSun;height:18px;text-align:center;vertical-align:top;width:30px;margin:0 5px;}
+.pagination .page-skip button{display:inline-block;border:0 none;cursor:pointer;height:20px;width:55px;color:#fff;margin:0 0 0 5px;}
+.pagination strong{font-weight: normal;display: inline-block;margin: 0 5px;}
+.pagination .page-skip strong input{height:20px;line-height:20px;border: 1px solid #dfdfdf;}
+.pagination .page-skip button{width: 40px;height:24px;line-height:24px;border: 1px solid #dfdfdf;background: #fff;display: inline-block;color: #666;}
